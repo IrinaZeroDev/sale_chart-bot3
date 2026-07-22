@@ -1,0 +1,15 @@
+services:
+  bot-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    env_file: .env
+    ports: ["8000:8000"]
+  gateway:
+    build: ./node-gateway
+    env_file: .env
+    environment:
+      PYTHON_API_URL: http://bot-api:8000
+    ports: ["3000:3000"]
+    depends_on: [bot-api]
+
