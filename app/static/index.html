@@ -2,47 +2,89 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MVP интеллектуального консультанта отдела продаж">
-  <title>Sales Assistant — MVP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8fa">
+  <meta name="description" content="AI-консультант по товарам, заказам и поддержке">
+  <title>Sales Assistant</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <main class="shell">
-    <section class="intro" aria-labelledby="product-title">
-      <p class="eyebrow">SALES ASSISTANT · MVP</p>
-      <h1 id="product-title">Ваш цифровой консультант по продажам</h1>
-      <p class="lead">Помогает подобрать продукт, проверить заказ и получить информацию об условиях обслуживания.</p>
-      <div class="features" aria-label="Возможности">
-        <span>Каталог и цены</span><span>Статус заказа</span><span>Поддержка</span>
-      </div>
-      <div class="provider-card">
-        <span class="status-dot" aria-hidden="true"></span>
-        <div><small>AI-провайдер</small><strong id="provider-name">Проверка…</strong></div>
-      </div>
-      <p class="integration-note">Архитектура поддерживает GigaChat и ProxyAPI. Ключи хранятся только на сервере.</p>
-    </section>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="О сервисе">
+      <a class="brand" href="/" aria-label="Sales Assistant — главная">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 8.5h10M7 12h7m-2 8-4-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3l-4 4Z"/></svg>
+        </span>
+        <span>Sales Assistant</span>
+      </a>
 
-    <section class="chat-card" aria-labelledby="chat-title">
-      <header class="chat-header">
-        <div class="avatar" aria-hidden="true">SA</div>
-        <div><h2 id="chat-title">Консультант</h2><p><span class="online-dot"></span> На связи</p></div>
-        <a class="telegram-link" href="https://t.me/shop_saler_bot" target="_blank" rel="noopener noreferrer">Telegram</a>
-      </header>
-      <div id="messages" class="messages" aria-live="polite" aria-label="Сообщения чата"></div>
-      <div class="quick-actions" aria-label="Быстрые вопросы">
-        <button type="button" data-message="Покажите товары и цены">Товары и цены</button>
-        <button type="button" data-message="Статус заказа ORD-1002">Статус заказа</button>
-        <button type="button" data-message="Какие условия доставки?">Доставка</button>
+      <div class="sidebar-copy">
+        <p class="overline">AI-КОНСУЛЬТАНТ</p>
+        <h1>Ответы по делу.<br>Без ожидания.</h1>
+        <p>Узнайте стоимость, проверьте заказ или задайте вопрос об условиях обслуживания.</p>
       </div>
-      <form id="chat-form" class="chat-form">
-        <label class="visually-hidden" for="message-input">Ваш вопрос</label>
-        <input id="message-input" name="message" maxlength="4000" autocomplete="off" placeholder="Введите ваш вопрос…" required>
-        <button id="send-button" type="submit" aria-label="Отправить сообщение">Отправить</button>
-      </form>
-      <p class="privacy">Не указывайте паспортные данные, банковские реквизиты и пароли.</p>
-    </section>
-  </main>
+
+      <nav class="capabilities" aria-label="Возможности ассистента">
+        <button type="button" data-message="Покажите товары и цены">
+          <span class="capability-icon" aria-hidden="true">₽</span>
+          <span><strong>Товары и цены</strong><small>Каталог и сроки</small></span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+        <button type="button" data-message="Статус заказа ORD-1002">
+          <span class="capability-icon" aria-hidden="true">#</span>
+          <span><strong>Статус заказа</strong><small>Проверка по номеру</small></span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+        <button type="button" data-message="Какие условия доставки?">
+          <span class="capability-icon" aria-hidden="true">?</span>
+          <span><strong>Поддержка</strong><small>Доставка и оплата</small></span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+      </nav>
+
+      <footer class="sidebar-footer">
+        <div class="provider-status"><span class="status-dot" aria-hidden="true"></span><span>Провайдер: <strong id="provider-name">проверка</strong></span></div>
+        <p>Поддерживает GigaChat и ProxyAPI</p>
+      </footer>
+    </aside>
+
+    <main class="chat-panel">
+      <header class="chat-header">
+        <div class="assistant-identity">
+          <span class="assistant-avatar" aria-hidden="true">S</span>
+          <span><strong>Консультант</strong><small><i aria-hidden="true"></i> Онлайн</small></span>
+        </div>
+        <a class="telegram-link" href="https://t.me/shop_saler_bot" target="_blank" rel="noopener noreferrer" aria-label="Открыть бота в Telegram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 4-3 16-6-4-3 3v-5l8-7-10 6-4-2 18-7Z"/></svg>
+          <span>Telegram</span>
+        </a>
+      </header>
+
+      <section id="messages" class="messages" aria-label="Диалог с консультантом" aria-live="polite">
+        <div class="welcome">
+          <span class="welcome-icon" aria-hidden="true">S</span>
+          <h2>Здравствуйте!</h2>
+          <p>Чем могу помочь?</p>
+          <div class="mobile-actions" aria-label="Быстрый выбор темы">
+            <button type="button" data-message="Покажите товары и цены">Товары и цены</button>
+            <button type="button" data-message="Статус заказа ORD-1002">Статус заказа</button>
+            <button type="button" data-message="Какие условия доставки?">Доставка</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="composer-wrap">
+        <form id="chat-form" class="composer">
+          <label class="visually-hidden" for="message-input">Введите вопрос</label>
+          <textarea id="message-input" name="message" rows="1" maxlength="4000" autocomplete="off" placeholder="Напишите сообщение" required></textarea>
+          <button id="send-button" type="submit" aria-label="Отправить сообщение">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Zm7 1 7-8"/></svg>
+          </button>
+        </form>
+        <p class="privacy">Не передавайте пароли, платёжные и паспортные данные</p>
+      </div>
+    </main>
+  </div>
   <script type="module" src="/static/app.js"></script>
 </body>
 </html>
