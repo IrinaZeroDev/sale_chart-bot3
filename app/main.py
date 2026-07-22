@@ -1,5 +1,6 @@
 import logging
 import httpx
+import mimetypes
 from collections import defaultdict, deque
 from pathlib import Path
 from time import monotonic
@@ -13,6 +14,8 @@ from .models import ChatRequest, ChatResponse, HealthResponse
 from .providers import build_provider
 
 logging.basicConfig(level=logging.INFO)
+mimetypes.add_type("application/javascript", ".js")
+mimetypes.types_map[".js"] = "application/javascript"
 settings = get_settings()
 company = MockCompanySystem()
 dialog = DialogService(build_provider(settings), company)

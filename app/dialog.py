@@ -34,12 +34,24 @@ class DialogService:
     async def reply(self, request: ChatRequest) -> ChatResponse:
         session = self.sessions.setdefault(request.session_id, Session())
         text, lower = request.message.strip(), request.message.strip().lower()
+        command = lower.split(maxsplit=1)[0]
         if request.consent_to_contact is not None:
             session.consent = request.consent_to_contact
 
-        if lower in {"/start", "start", "начать", "привет", "здравствуйте", "меню"}:
+        if command in {"/start", "/menu"} or lower in {"start", "начать", "привет", "здравствуйте", "меню"}:
             session.stage = "menu"
             return self.response(request, GREETING, session.stage, "menu")
+
+        if command == "/products":
+            text, lower = "Покажите товары и цены", "товары цены"
+        elif command == "/order":
+            order_argument = text[len(command):].strip()
+            text = f"Статус заказа {order_argument}" if order_argument else "Статус заказа"
+            lower = text.lower()
+        elif command == "/support":
+            text, lower = "Вопросы поддержки", "поддержка"
+        elif command == "/manager":
+            text, lower = "Позовите менеджера", "менеджер"
 
         if any(word in lower for word in HUMAN_WORDS):
             session.stage = "handoff"

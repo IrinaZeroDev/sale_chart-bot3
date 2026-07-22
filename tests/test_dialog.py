@@ -19,6 +19,27 @@ async def test_professional_menu(service):
 
 
 @pytest.mark.asyncio
+async def test_telegram_menu_command(service):
+    bot, _ = service
+    result = await bot.reply(ChatRequest(session_id="menu", message="/menu"))
+    assert result.reply == GREETING
+
+
+@pytest.mark.asyncio
+async def test_telegram_product_command(service):
+    bot, _ = service
+    result = await bot.reply(ChatRequest(session_id="products", message="/products"))
+    assert "Business Start" in result.reply
+
+
+@pytest.mark.asyncio
+async def test_telegram_order_command(service):
+    bot, _ = service
+    result = await bot.reply(ChatRequest(session_id="order", message="/order ORD-1002"))
+    assert "Передан в доставку" in result.reply
+
+
+@pytest.mark.asyncio
 async def test_product_prices_from_catalog(service):
     bot, _ = service
     result = await bot.reply(ChatRequest(session_id="2", message="Какие цены на продукты?"))
