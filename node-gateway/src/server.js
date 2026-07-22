@@ -1,4 +1,6 @@
+import './load-env.js';
 import express from 'express';
+import { askChatBot } from './chat-client.js';
 
 export function createApp({ fetchImpl = fetch } = {}) {
   const app = express();
@@ -10,13 +12,8 @@ export function createApp({ fetchImpl = fetch } = {}) {
       return res.status(400).json({ error: 'sessionId and message are required' });
     }
     try {
-      const upstream = await fetchImpl(`${process.env.PYTHON_API_URL ?? 'http://localhost:8000'}/api/v1/chat`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-api-key': process.env.INTERNAL_API_KEY ?? 'change-me' },
-        body: JSON.stringify({ session_id: sessionId, message, channel, consent_to_contact: consentToContact })
-      });
-      const body = await upstream.json();
-      return res.status(upstream.status).json(body);
+      const body = await askChatBot({ sessionId, message, channel, consentToContact, fetchImpl });
+      return res.json(body);
     } catch {
       return res.status(502).json({ error: 'Chat service is unavailable' });
     }
@@ -29,13 +26,7 @@ export function createApp({ fetchImpl = fetch } = {}) {
     const message = req.body?.message;
     if (!message?.chat?.id || typeof message.text !== 'string') return res.sendStatus(200);
     try {
-      const upstream = await fetchImpl(`${process.env.PYTHON_API_URL ?? 'http://localhost:8000'}/api/v1/chat`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-api-key': process.env.INTERNAL_API_KEY ?? 'change-me' },
-        body: JSON.stringify({ session_id: String(message.chat.id), message: message.text, channel: 'telegram' })
-      });
-      const answer = await upstream.json();
-      if (!upstream.ok) return res.status(502).json({ error: 'Chat service rejected request' });
+      const answer = await askChatBot({ sessionId: message.chat.id, message: message.text, fetchImpl });
       const token = process.env.TELEGRAM_BOT_TOKEN;
       if (!token) return res.status(200).json({ ok: true, mock: true, reply: answer.reply });
       const sent = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {

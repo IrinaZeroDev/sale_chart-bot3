@@ -55,6 +55,15 @@ Invoke-RestMethod http://localhost:8000/api/v1/chat -Method Post -Headers $heade
 
 Укажите `TELEGRAM_BOT_TOKEN` и `TELEGRAM_WEBHOOK_SECRET`, затем зарегистрируйте HTTPS-адрес `/webhook/telegram` как webhook бота. Без токена endpoint возвращает mock-ответ и подходит для приёмочной демонстрации.
 
+Для запуска без публичного сервера сначала запустите Python API, затем во втором терминале:
+
+```powershell
+Set-Location node-gateway
+npm run telegram
+```
+
+Long polling автоматически отключает ранее установленный webhook. Токен читается из корневого `.env` и не выводится в лог.
+
 ## Тесты
 
 ```powershell
