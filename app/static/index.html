@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MVP интеллектуального консультанта отдела продаж">
+  <title>Sales Assistant — MVP</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="intro" aria-labelledby="product-title">
+      <p class="eyebrow">SALES ASSISTANT · MVP</p>
+      <h1 id="product-title">Ваш цифровой консультант по продажам</h1>
+      <p class="lead">Помогает подобрать продукт, проверить заказ и получить информацию об условиях обслуживания.</p>
+      <div class="features" aria-label="Возможности">
+        <span>Каталог и цены</span><span>Статус заказа</span><span>Поддержка</span>
+      </div>
+      <div class="provider-card">
+        <span class="status-dot" aria-hidden="true"></span>
+        <div><small>AI-провайдер</small><strong id="provider-name">Проверка…</strong></div>
+      </div>
+      <p class="integration-note">Архитектура поддерживает GigaChat и ProxyAPI. Ключи хранятся только на сервере.</p>
+    </section>
+
+    <section class="chat-card" aria-labelledby="chat-title">
+      <header class="chat-header">
+        <div class="avatar" aria-hidden="true">SA</div>
+        <div><h2 id="chat-title">Консультант</h2><p><span class="online-dot"></span> На связи</p></div>
+        <a class="telegram-link" href="https://t.me/shop_saler_bot" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </header>
+      <div id="messages" class="messages" aria-live="polite" aria-label="Сообщения чата"></div>
+      <div class="quick-actions" aria-label="Быстрые вопросы">
+        <button type="button" data-message="Покажите товары и цены">Товары и цены</button>
+        <button type="button" data-message="Статус заказа ORD-1002">Статус заказа</button>
+        <button type="button" data-message="Какие условия доставки?">Доставка</button>
+      </div>
+      <form id="chat-form" class="chat-form">
+        <label class="visually-hidden" for="message-input">Ваш вопрос</label>
+        <input id="message-input" name="message" maxlength="4000" autocomplete="off" placeholder="Введите ваш вопрос…" required>
+        <button id="send-button" type="submit" aria-label="Отправить сообщение">Отправить</button>
+      </form>
+      <p class="privacy">Не указывайте паспортные данные, банковские реквизиты и пароли.</p>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

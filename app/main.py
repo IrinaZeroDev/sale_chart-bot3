@@ -1,6 +1,11 @@
 import logging
 import httpx
-from fastapi import Depends, FastAPI, Header, HTTPException
+from collections import defaultdict, deque
+from pathlib import Path
+from time import monotonic
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from .config import Settings, get_settings
 from .dialog import DialogService
 from .company_system import MockCompanySystem
@@ -12,6 +17,9 @@ settings = get_settings()
 company = MockCompanySystem()
 dialog = DialogService(build_provider(settings), company)
 app = FastAPI(title="Sales Chat Bot API", version="1.0.0")
+static_dir = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+public_requests: dict[str, deque[float]] = defaultdict(deque)
 
 
 def verify_api_key(x_api_key: str = Header(default=""), cfg: Settings = Depends(get_settings)) -> None:
@@ -22,6 +30,24 @@ def verify_api_key(x_api_key: str = Header(default=""), cfg: Settings = Depends(
 @app.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(provider=settings.llm_provider)
+
+
+@app.get("/", include_in_schema=False)
+async def web_app():
+    return FileResponse(static_dir / "index.html")
+
+
+@app.post("/api/v1/public/chat", response_model=ChatResponse)
+async def public_chat(request: ChatRequest, http_request: Request) -> ChatResponse:
+    client_id = http_request.client.host if http_request.client else "unknown"
+    now = monotonic()
+    timestamps = public_requests[client_id]
+    while timestamps and now - timestamps[0] > 60:
+        timestamps.popleft()
+    if len(timestamps) >= 30:
+        raise HTTPException(status_code=429, detail="Слишком много запросов. Повторите через минуту.")
+    timestamps.append(now)
+    return await chat(request)
 
 
 @app.post("/api/v1/chat", response_model=ChatResponse, dependencies=[Depends(verify_api_key)])
